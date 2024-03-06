@@ -49,33 +49,44 @@
         document.getElementById('getPost').addEventListener('click',getPost);
   
 
-
        
         const Myform = document.getElementById('Myform');
 
+    
+        Myform.addEventListener('submit', (e) => {
+                e.preventDefault();
 
-        Myform.addEventListener('submit', (e) =>{
-             e.preventDefault();
-             
+            let title = document.getElementById('title').value;
+            let body = document.getElementById('body').value;
 
-             let title = document.getElementById('title').value;
-             let body = document.getElementById('body').value;
+    fetch('https://jsonplaceholder.typicode.com/comments', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title: title, body: body })
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        console.log(data);
+        let output = '<h1 class="m-5">Your Data Posted</h1>';
+        
+        output += `
+            <div class="container ">
+                <h2>${data.title || title}</h2>
+                <p>${data.body || body}</p>
+            </div>
+        `;
 
-             fetch('https://jsonplaceholder.typicode.com/comments', {
-                method:'POST',
-                headers:{
-                    'Accepts':'application/json, text/plain , */*',
-                    'Content-type':'application/json' 
-                },
-                body:JSON.stringify({title:title,body:body})
-             })
-             .then((res) => res.json())
-             .then((data) => console.log(data))
+        // Update the DOM outside the loop, since data is not an array
+        document.getElementById('output').innerHTML = output;
+    });
 
-              title = '';
-              body = '';
+    document.getElementById('title').value = '';
+    document.getElementById('body').value = '';
+});
 
-        })
    
         function getText(){
             fetch('sample.txt')
